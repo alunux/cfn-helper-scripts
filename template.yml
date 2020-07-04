@@ -78,6 +78,11 @@ Resources:
           --stack ${AWS::StackName} \
           --resource ServerInstance \
           --region ${AWS::Region}
+
+          /opt/aws/bin/cfn-get-metadata \
+          --stack ${AWS::StackName} \
+          --resource ServerInstance \
+          --region ${AWS::Region}
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
