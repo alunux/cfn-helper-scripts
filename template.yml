@@ -24,6 +24,25 @@ Parameters:
 Resources:
   ServerInstance:
     Type: AWS::EC2::Instance
+    Metadata:
+      Comment: Install a simple web app
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+          files:
+            /var/www/html/index.html:
+              content: !Sub |
+                <p>Hello!</p>
+              mode: '000644'
+              owner: root
+              group: root
+          services:
+            sysvinit:
+              httpd:
+                enabled: 'true'
+                ensureRunning: 'true'
     Properties:
       ImageId: !Ref AmiId
       InstanceType: t3.micro
@@ -55,7 +74,10 @@ Resources:
           Content-Disposition: attachment; filename="userdata.txt"
 
           #!/bin/bash -xe
-          :
+          /opt/aws/bin/cfn-init -v \
+          --stack ${AWS::StackName} \
+          --resource ServerInstance \
+          --region ${AWS::Region}
   InstanceSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
