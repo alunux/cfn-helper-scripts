@@ -34,7 +34,7 @@ Resources:
           files:
             /var/www/html/index.html:
               content: !Sub |
-                <p>Hello!</p>
+                <p>Welcome!</p>
               mode: '000644'
               owner: root
               group: root
