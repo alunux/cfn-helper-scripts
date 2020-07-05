@@ -38,11 +38,39 @@ Resources:
               mode: '000644'
               owner: root
               group: root
+            /etc/cfn/cfn-hup.conf:
+              content: !Sub |
+                [main]
+                stack=${AWS::StackName}
+                region=${AWS::Region}
+                interval=1
+              mode: '000400'
+              owner: root
+              group: root
+            /etc/cfn/hooks.d/cfn-auto-reloader.conf:
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.ServerInstance.Metadata.AWS::CloudFormation::Init
+                action=/opt/aws/bin/cfn-init -v \
+                  --stack  ${AWS::StackName} \
+                  --resource ServerInstance \
+                  --region ${AWS::Region}
+                runas=root
+              mode: '000400'
+              owner: root
+              group: root
           services:
             sysvinit:
               httpd:
                 enabled: 'true'
                 ensureRunning: 'true'
+              cfn-hup:
+                enabled: 'true'
+                ensureRunning: 'true'
+                files:
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
     Properties:
       ImageId: !Ref AmiId
       InstanceType: t3.micro
