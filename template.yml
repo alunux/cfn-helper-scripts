@@ -27,7 +27,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: 1
-        Timeout: PT10S # シビアに設定
+        Timeout: PT10M
     Metadata:
       Comment: Install a simple web app
       AWS::CloudFormation::Init:
